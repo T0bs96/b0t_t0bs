@@ -1,7 +1,7 @@
 # b0t_t0bs
 The code for a python written discord bot.
 
-VERSION: 0.1.0
+VERSION: 0.1.1
 
 The bots only purpose at the moment, is to manage a locally hosted (CSGO) server.
 
