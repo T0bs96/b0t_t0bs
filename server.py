@@ -21,16 +21,6 @@ def Check(host):
     else:
         return False
 
-def PingCheck(host):
-    response = os.system("ping -c 1" + " " + host)
-    
-    if response == 0:
-
-        return True
-    else:
-        time.sleep(5)
-        PingCheck(host)
-
 def ShutDown(host):
     sshkey = paramiko.RSAKey.from_private_key_file("/home/tdp/.ssh/home_rsa")
     client = paramiko.SSHClient()

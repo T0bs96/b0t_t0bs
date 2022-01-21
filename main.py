@@ -1,6 +1,5 @@
 import os
 from os.path import join, dirname
-from unittest import result
 from dotenv import load_dotenv
 from discord.ext import commands
 import server
@@ -50,9 +49,12 @@ async def start(ctx):
         await ctx.send("connect " + CONNECT)
     else:
         if server.Start(GATEWAY, PORT):
-            await ctx.send("Server is turning on")
-            if server.PingCheck(HOST):
-                await ctx.send("Server is turned on")
+            await ctx.send("Server is turning on...")
+            while not server.Check(HOST):
+                time.sleep(10)
+                await ctx.send("Server is still turning on... Update in 10 seconds")
+            if server.Check(HOST):
+                await ctx.send("Server is running!")
                 await ctx.send("connect " + CONNECT)
         else:
             print("Connection refused")
