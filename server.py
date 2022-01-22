@@ -2,7 +2,6 @@
 import paramiko
 import telnetlib
 import os
-import time
 
 from paramiko import AuthenticationException
 
@@ -28,6 +27,7 @@ def ShutDown(host):
     try:
         client.connect(host, username='tdp',pkey = sshkey)
         stdin, stdout, stderr = client.exec_command('sudo shutdown')
+        client.close()
         return True
     except:
         return False
