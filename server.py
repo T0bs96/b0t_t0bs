@@ -30,7 +30,7 @@ def ShutDown(host, pkeyPath, uname):
         return True
     except:
         return False
-def Status(host):
+def Status(host, prefix):
     if Check(host):
         state = "RUNNING!"
         embed = discord.Embed(title="Status:", description="Following services and their status", color=0x00a86b)
@@ -38,5 +38,5 @@ def Status(host):
     else:
         state = "DOWN :("
         embed = discord.Embed(title="Status:", description="Following services and their status", color=0xFF5733)
-        embed.add_field(name="Server status", value=state + "\nUse $start to start the server", inline=True)
+        embed.add_field(name="Server status", value=state + "\nUse " + prefix + "start to start the server", inline=True)
     return embed

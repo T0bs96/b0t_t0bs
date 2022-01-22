@@ -28,16 +28,19 @@ CONNECT = os.environ.get("CONNECT")
 PKEY = os.environ.get("PKEY")
 UNAME = os.environ.get("UNAME")
 
+#Set command prefix
+prefix="bt-"
+
 #Coding!  
 
 class MyBot(commands.Bot):
     async def on_ready(self):
         print('Logged on as {0}!'.format(self.user))
-        game = discord.Game("I am b0t!")
-        await client.change_presence(status=discord.Status.idle, activity=game)
+        game = discord.Game("Botting around")
+        await client.change_presence(status=discord.Status.online, activity=game)
 
 #Commands
-bot = MyBot(command_prefix='$')
+bot = MyBot(command_prefix=prefix)
 
 @bot.command()
 async def version(ctx):
@@ -47,20 +50,22 @@ async def version(ctx):
 async def ping(ctx):
     await ctx.send('Pong!')
 
+@bot.remove_command("help")
 @bot.command()
-async def h(ctx):
+async def help(ctx):
     embed = discord.Embed(title="Usable commands", description="This is a list of currently available commands", color=0xFF5733)
-    embed.add_field(name="$ping", value="Test if bot is running", inline=False)
-    embed.add_field(name="$version", value="See current version of the bot", inline=False)
-    embed.add_field(name="$start", value="Start T0bs' server", inline=False)
-    embed.add_field(name="$stop", value="Stop T0bs' server", inline=False)
-    embed.add_field(name="$status",value="Check server status (To be implemented in v. 0.3.0", inline=False)
+    embed.add_field(name=prefix + "help", value="Shows this list of commands", inline=False)
+    embed.add_field(name=prefix + "ping", value="Test if bot is running", inline=False)
+    embed.add_field(name=prefix + "start", value="Start T0bs' server", inline=False)
+    embed.add_field(name=prefix + "stop", value="Stop T0bs' server", inline=False)
+    embed.add_field(name=prefix + "status",value="Check server status", inline=False)
+    embed.add_field(name=prefix + "version", value="See current version of the bot", inline=False)
     await ctx.send(embed=embed)
 
 @bot.command()
 async def status(ctx):
     message = await ctx.send("Checking system status...")
-    embed = server.Status(HOST)
+    embed = server.Status(HOST, prefix)
     await message.edit(embed=embed)
 
 @bot.command()
