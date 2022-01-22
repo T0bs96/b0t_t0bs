@@ -26,6 +26,8 @@ HOST = os.environ.get("HOST")
 PORT = os.environ.get("PORT")
 GATEWAY = os.environ.get("GATEWAY")
 CONNECT = os.environ.get("CONNECT")
+PKEY = os.environ.get("PKEY")
+UNAME = os.environ.get("UNAME")
 
 #Coding!  
 
@@ -81,7 +83,7 @@ async def start(ctx):
 @bot.command()
 async def stop(ctx):
     message = await ctx.send("Trying to shutdown server...")
-    if server.ShutDown(HOST):
+    if server.ShutDown(HOST, PKEY, UNAME):
         await message.edit(content="Server is shutting down in one minute")
         time.sleep(60)
         if server.Check(HOST):

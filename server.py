@@ -20,12 +20,12 @@ def Check(host):
     else:
         return False
 
-def ShutDown(host):
-    sshkey = paramiko.RSAKey.from_private_key_file("/home/tdp/.ssh/home_rsa")
+def ShutDown(host, pkeyPath, uname):
+    sshkey = paramiko.RSAKey.from_private_key_file(pkeyPath)
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
-        client.connect(host, username='tdp',pkey = sshkey)
+        client.connect(host, username = uname, pkey = sshkey)
         stdin, stdout, stderr = client.exec_command('sudo shutdown')
         client.close()
         return True
