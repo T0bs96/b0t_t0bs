@@ -1,4 +1,3 @@
-from email import message
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -58,23 +57,31 @@ async def h(ctx):
     embed.add_field(name="$status",value="Check server status (To be implemented in v. 0.3.0", inline=False)
     await ctx.send(embed=embed)
 
+@bot.command()
+async def status(ctx):
+    message = await ctx.send("Checking system status...")
+    embed = server.Status(HOST)
+    await message.edit(embed=embed)
 
 @bot.command()
 async def start(ctx): 
+    message = await ctx.send("Checking if server is on first...")
     if server.Check(HOST):
-        await ctx.send("Server is turned on")
+        await message.edit(content="Server is already turned on")
     else:
-        message = await ctx.send("Trying to turn on server...")
+        await message.edit(content="Trying to turn on server...")
         if server.Start(GATEWAY, PORT):
             await message.edit(content="Server is turning on...")
             i = 1
             while not server.Check(HOST):
-                time.sleep(10)
-                await message.edit(content="Server is still turning on..." "["+ str(i) +"] retrie(s)")
-                int(i)
-                i = i+1
+                while i < 100:
+                    time.sleep(1)
+                    await message.edit(content="Server is still turning on..." + str(i) +" seconds has passed")
+                    int(i)
+                    i = i+1
             if server.Check(HOST):
-                await message.edit(content="Server is *running!*")
+                embed = server.Status(HOST)
+                await message.edit(embed=embed)
                 await ctx.send("connect " + CONNECT)
         else:
             print("Connection refused")
@@ -82,14 +89,23 @@ async def start(ctx):
 
 @bot.command()
 async def stop(ctx):
-    message = await ctx.send("Trying to shutdown server...")
+    message = await ctx.send("Trying to gracefully shut down server...")
     if server.ShutDown(HOST, PKEY, UNAME):
-        await message.edit(content="Server is shutting down in one minute")
-        time.sleep(60)
-        if server.Check(HOST):
-            await message.edit(content="Server is shutting down in one minute")
+        i = 60
+        await message.edit(content="Server is shutting down in " + str(i) + " seconds!")
+        while server.Check(HOST):
+            await message.edit(content="Server is shutting down in " + str(i) + " seconds!")
+            int(i)
+            i = i - 1
+            time.sleep(1)
+        await message.edit(content="Server has been shut down")
     else:
         await message.edit(content="Server was unable to shut down...")
-        
+
+@bot.command()
+async def test(ctx):
+    message = await ctx.send("Testing something...")
+    embed = status(HOST)
+    await message.edit(embed=embed)
 client = bot
 client.run(TOKEN)

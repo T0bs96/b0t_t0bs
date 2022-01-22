@@ -2,8 +2,7 @@
 import paramiko
 import telnetlib
 import os
-
-from paramiko import AuthenticationException
+import discord
 
 def Start(gateway,port):
     try:
@@ -31,3 +30,13 @@ def ShutDown(host, pkeyPath, uname):
         return True
     except:
         return False
+def Status(host):
+    if Check(host):
+        state = "RUNNING!"
+        embed = discord.Embed(title="Status:", description="Following services and their status", color=0x00a86b)
+        embed.add_field(name="Server status", value=state, inline=True)
+    else:
+        state = "DOWN :("
+        embed = discord.Embed(title="Status:", description="Following services and their status", color=0xFF5733)
+        embed.add_field(name="Server status", value=state + "\nUse $start to start the server", inline=True)
+    return embed
