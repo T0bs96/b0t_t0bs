@@ -44,17 +44,22 @@ async def version(ctx):
 
 @bot.command()
 async def ping(ctx):
-    message = await ctx.send('Pong!')
-    i = 1
-    while i < 4:
-        await message.edit(content="Server is still turning on..." "["+ str(i) +"] retries")
-        int(i)
-        i = i+1
+    await ctx.send('Pong!')
 
 @bot.command()
-async def start(ctx):
+async def h(ctx):
+    embed = discord.Embed(title="Usable commands", description="This is a list of currently available commands", color=0xFF5733)
+    embed.add_field(name="$ping", value="Test if bot is running", inline=False)
+    embed.add_field(name="$version", value="See current version of the bot", inline=False)
+    embed.add_field(name="$start", value="Start T0bs' server", inline=False)
+    embed.add_field(name="$stop", value="Stop T0bs' server", inline=False)
+    embed.add_field(name="$status",value="Check server status (To be implemented in v. 0.3.0", inline=False)
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def start(ctx): 
     if server.Check(HOST):
-        print("Server is turned *on*") 
         await ctx.send("Server is turned on")
     else:
         message = await ctx.send("Trying to turn on server...")
