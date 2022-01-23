@@ -29,7 +29,7 @@ PKEY = os.environ.get("PKEY")
 UNAME = os.environ.get("UNAME")
 
 #Set command prefix
-prefix="bt-"
+prefix="sbot-"
 
 #Coding!  
 
