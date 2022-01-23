@@ -66,7 +66,7 @@ async def help(ctx):
 async def status(ctx):
     message = await ctx.send("Checking system status...")
     embed = server.Status(HOST, prefix)
-    await message.edit(embed=embed)
+    await message.edit(embed=embed) 
 
 @bot.command()
 async def start(ctx): 
