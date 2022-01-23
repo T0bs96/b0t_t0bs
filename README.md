@@ -1,4 +1,4 @@
-# b0t_t0bs
+# sBot
 The code for a python written discord bot.
 
 VERSION: 0.3.0
