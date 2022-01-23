@@ -31,7 +31,7 @@ UNAME = os.environ.get("UNAME")
 #Set command prefix
 prefix="sbot-"
 
-#Coding!  
+#Coding! 
 
 class MyBot(commands.Bot):
     async def on_ready(self):
