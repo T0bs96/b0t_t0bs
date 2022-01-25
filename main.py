@@ -7,6 +7,7 @@ import server
 from server import *
 import logging
 import time
+import datetime
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -14,7 +15,7 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-ver = "0.3.0"
+ver = "0.3.4"
 
 #Load env vars
 dotenv_path = join(dirname(__file__), ".env")
@@ -66,7 +67,9 @@ async def help(ctx):
 async def status(ctx):
     message = await ctx.send("Checking system status...")
     embed = server.Status(HOST, prefix)
-    await message.edit(embed=embed) 
+    await message.delete()
+    await ctx.send(embed=embed) 
+
 
 @bot.command()
 async def start(ctx): 
@@ -77,16 +80,14 @@ async def start(ctx):
         await message.edit(content="Trying to turn on server...")
         if server.Start(GATEWAY, PORT):
             await message.edit(content="Server is turning on...")
-            i = 1
+            string="Server is still turning on"
             while not server.Check(HOST):
-                while i < 100:
-                    time.sleep(1)
-                    await message.edit(content="Server is still turning on..." + str(i) +" seconds has passed")
-                    int(i)
-                    i = i+1
+                string += '.'
+                await message.edit(content=string)
             if server.Check(HOST):
-                embed = server.Status(HOST)
-                await message.edit(embed=embed)
+                await message.delete()
+                embed = server.Status(HOST, prefix)
+                await ctx.send(embed=embed)
                 await ctx.send("connect " + CONNECT)
         else:
             print("Connection refused")
@@ -94,23 +95,30 @@ async def start(ctx):
 
 @bot.command()
 async def stop(ctx):
-    message = await ctx.send("Trying to gracefully shut down server...")
+    await ctx.send("Trying to gracefully shut down server...")
     if server.ShutDown(HOST, PKEY, UNAME):
-        i = 60
-        await message.edit(content="Server is shutting down in " + str(i) + " seconds!")
+        current_time = datetime.datetime.now()
+        add = 1
+        add_minutes = datetime.timedelta(minutes = add)
+        _down_time = current_time + add_minutes
+        down_time = _down_time.strftime("%H:%M:%S")
+        message = await ctx.send(content="Server will shutdown at " + down_time)
         while server.Check(HOST):
-            await message.edit(content="Server is shutting down in " + str(i) + " seconds!")
-            int(i)
-            i = i - 1
             time.sleep(1)
         await message.edit(content="Server has been shut down")
     else:
-        await message.edit(content="Server was unable to shut down...")
+        message = await ctx.send("Server was unable to shut down... If server is booting up, please wait until it has started.")
 
 @bot.command()
 async def test(ctx):
-    message = await ctx.send("Testing something...")
-    embed = status(HOST)
-    await message.edit(embed=embed)
+    await ctx.send("Testing something")
+    i = 5
+    message = await ctx.send("Message will be deleted in "+ str(i) +" seconds.")
+    while i > 0:
+        await message.edit(content="Message should be deleted in "+ str(i) +" seconds.")
+        i = i - 1
+        time.sleep(1)
+        print (i)
+    await message.delete()
 client = bot
 client.run(TOKEN)

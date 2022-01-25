@@ -1,8 +1,8 @@
 #!/bin/python3
 import paramiko
 import telnetlib
-import os
 import discord
+import socket
 
 def Start(gateway,port):
     try:
@@ -12,9 +12,10 @@ def Start(gateway,port):
         return False
 
 def Check(host):
-    response = os.system("ping -c 1" + " " + host)
-
-    if response == 0:
+    port = 22
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex((host, port))
+    if result == 0:
         return True
     else:
         return False

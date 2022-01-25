@@ -1,7 +1,7 @@
 # sBot
 The code for a python written discord bot.
 
-VERSION: 0.3.0
+VERSION: 0.3.4
 
 The bots only purpose at the moment, is to manage a locally hosted (CSGO) server.
 
