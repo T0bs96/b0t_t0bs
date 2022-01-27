@@ -10,24 +10,23 @@ import time
 import datetime
 
 logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-ver = "0.3.5"
+ver = "0.3.6"
 
 #Load env vars
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
 
-TOKEN = os.environ.get("TOKEN")
-HOST = os.environ.get("HOST")
-PORT = os.environ.get("PORT")
-GATEWAY = os.environ.get("GATEWAY")
-CONNECT = os.environ.get("CONNECT")
-PKEY = os.environ.get("PKEY")
-UNAME = os.environ.get("UNAME")
+TOKEN   =   os.environ.get("TOKEN")
+HOST    =   os.environ.get("HOST")
+CONNECT =   os.environ.get("CONNECT")
+PKEY    =   os.environ.get("PKEY")
+UNAME   =   os.environ.get("UNAME")
+MAC     =   os.environ.get("MAC")
 
 #Set command prefix
 prefix="sbot-"
@@ -75,23 +74,32 @@ async def status(ctx):
 async def start(ctx): 
     message = await ctx.send("Checking if server is on first...")
     if server.Check(HOST):
+        try:
+            pubIP=socket.gethostbyname('t-dahlmann.asuscomm.com')
+        except:
+            await message.edit(content="Server is already turned on, but could not get IP")
         await message.edit(content="Server is already turned on")
+        await ctx.send("connect " + pubIP)
     else:
         await message.edit(content="Trying to turn on server...")
-        if server.Start(GATEWAY, PORT):
+        if server.Start(MAC):
             await message.edit(content="Server is turning on...")
             string="Server is still turning on"
             while not server.Check(HOST):
                 string += '.'
                 await message.edit(content=string)
             if server.Check(HOST):
+                try:
+                    pubIP=socket.gethostbyname('t-dahlmann.asuscomm.com')
+                except:
+                    await ctx.send("Server running. But unable to get public IP")
                 await message.delete()
                 embed = server.Status(HOST, prefix)
                 await ctx.send(embed=embed)
-                await ctx.send("connect " + CONNECT)
+                await ctx.send("connect " + pubIP + ";password pracc1234")
         else:
-            print("Connection refused")
-            await message.edit(content="connection to server on " + PORT + "was refused!")
+            print("Something went wrong...")
+            await message.edit(content="Something went wrong...")
 
 @bot.command()
 async def stop(ctx):
@@ -112,13 +120,7 @@ async def stop(ctx):
 @bot.command()
 async def test(ctx):
     await ctx.send("Testing something")
-    i = 5
-    message = await ctx.send("Message will be deleted in "+ str(i) +" seconds.")
-    while i > 0:
-        await message.edit(content="Message should be deleted in "+ str(i) +" seconds.")
-        i = i - 1
-        time.sleep(1)
-        print (i)
-    await message.delete()
+    server.TestStart(MAC)
+    
 client = bot
 client.run(TOKEN)

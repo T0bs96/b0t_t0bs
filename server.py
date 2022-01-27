@@ -1,12 +1,12 @@
 #!/bin/python3
 import paramiko
-import telnetlib
 import discord
 import socket
+from wakeonlan import send_magic_packet
 
-def Start(gateway,port):
+def Start(MAC):
     try:
-        telnetlib.Telnet(gateway, port, 2)
+        send_magic_packet(MAC)
         return True
     except:
         return False
@@ -41,3 +41,10 @@ def Status(host, prefix):
         embed = discord.Embed(title="Status:", description="Following services and their status", color=0xFF5733)
         embed.add_field(name="Server status", value=state + "\nUse **" + prefix + "start** to start the server", inline=True)
     return embed
+
+def TestStart(MAC):
+    try:
+        send_magic_packet(MAC)
+        return True
+    except:
+        return False
